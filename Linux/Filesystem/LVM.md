@@ -61,3 +61,116 @@ LVM 利用的是 Linux 系统的 device-mapper 功能来实现存储系统的虚
 
 - Windows 系统不支持 LVM 
 - 系统恢复可能会遇到问题 
+
+# 使用 LVM
+
+## 物理卷
+
+### 创建物理卷 pvcreate
+
+创建物理卷的时候可以使用尚未分区的磁盘或者是一整个磁盘分区。
+
+`语法：pvcreate 设备名（分区名）（支持多个）`
+
+```shell
+	sudo pvcreate /dev/sdc
+```
+
+### 列出所有物理卷 pvscan pvs pvdisplay
+
+#### pvscan
+
+不需要加任何参数
+
+#### pvs
+
+不需要加任何参数
+
+#### pvdisplay
+
+不需要加任何参数
+
+### 删除物理卷 pvremove
+
+`语法：pvremove 物理卷名字`
+
+```shell
+	sudo pvremove /dev/sdd2
+```
+
+## 卷组
+
+### 创建卷组 vgcreate
+
+创建卷组之前要确保以及创建了物理卷。
+
+`语法：vgcreate 卷组名 包含的物理卷设备（支持多个）`
+
+```shell
+	sudo vgcreate lvm_tutorial /dev/sdc /dev/sdd1
+```
+
+### 列出所有卷组 vgscan vgs vgdisplay
+
+同列出物理卷用法
+
+### 列出附加到卷组的物理卷 pvdisplay
+
+`语法：pvdisplay -S 卷组名 -C -o pv_name`
+
+```shell
+	sudo pvdisplay -S vgname=lvm_tutorial -C -o 
+```
+
+#### 列出有多少物理卷 vgdisplay
+
+`语法：vgdisplay -S 卷组名 -C -o pv_count`
+
+```shell
+	sudo vgdisplay -S vgname=lvm_tutorial -C -o 
+```
+
+### 扩展卷组 vgextend
+
+扩展卷组就是向卷组里面添加物理卷。
+
+`语法：vgextend 卷组名 物理卷名（支持多个）`
+
+```shell
+	sudo vgextend lvm_tutorial /dev/sdd2
+```
+
+### 减小卷组 vgreduce
+
+减小卷组就是从卷组里面删除一个物理卷设备。
+
+`语法：vgreduce 卷组名 物理卷名（支持多个）`
+
+```shell
+	sudo vgreduce lvm_tutorial /dev/sdc /dev/sdd1
+```
+
+### 删除卷组 vgremove
+
+从系统里面删除这个卷组。
+
+`语法：vgremove 卷组名`
+
+```shell
+	sudo vgremove lvm_tutorial
+```
+
+## 逻辑卷
+
+### 创建逻辑卷 lvcreate
+
+`语法：lvcreate -L 大小 -n 逻辑卷名 从哪个卷组分配空间`
+
+```shell
+	sudo lvcreate -L 5GB -n lv1 lvm_tutorial
+```
+
+### 格式化创建之后的卷组
+
+就像普通分区一样去格式化即可。
+
