@@ -174,3 +174,38 @@ LVM 利用的是 Linux 系统的 device-mapper 功能来实现存储系统的虚
 
 就像普通分区一样去格式化即可。
 
+### 调整逻辑卷大小 lvextend
+
+`语法：lvresize -L [+|-]大小 卷组名/逻辑卷名`
+
+```shell
+	sudo lvresize -L +2GB lvm_tutorial/lv1
+	sudo lvresize -L -2GB lvm_tutorial/lv1
+```
+
+#### 调整文件系统大小
+
+在逻辑卷大小调整完成后，**不要忘记再调整下文件系统的大小！**
+
+#### ext4
+
+```shell
+    # 如果是ext4，使用resize2fs命令，后面参数是分区
+    sudo resize2fs /dev/sdb5
+```
+
+#### xfs
+
+```shell
+    # 如果是xfs，使用xfs_growfs命令，后面参数是挂载点
+    sudo xfs_growfs /mnt/sdb5
+```
+
+### 删除逻辑卷 lvremove
+
+`语法：lvremove 卷组名/逻辑卷名`
+
+```shell
+	sudo lvremove lvm_tutorial/lv1
+```
+
